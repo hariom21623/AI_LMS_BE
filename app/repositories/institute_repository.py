@@ -2,6 +2,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models.institute import Institute
+from app.models.role import Role
+from app.models.user import User
+from app.models.user_role import UserRole
 
 
 class InstituteRepository:
@@ -61,11 +64,46 @@ class InstituteRepository:
         Get all institutes.
         """
 
-        stmt = select(Institute).order_by(
-            Institute.id.asc()
+        stmt = (
+            select(Institute)
+            .order_by(Institute.id.asc())
         )
 
-        return list(self.db.scalars(stmt).all())
+        return list(
+            self.db.scalars(stmt).all()
+        )
+
+    def get_admin_by_institute_id(
+        self,
+        institute_id: int,
+    ) -> User | None:
+        """
+        Get the active Institute Admin
+        assigned to an institute.
+        """
+
+        stmt = (
+            select(User)
+            .join(
+                UserRole,
+                UserRole.user_id == User.id,
+            )
+            .join(
+                Role,
+                Role.id == UserRole.role_id,
+            )
+            .where(
+                User.institute_id == institute_id,
+                User.branch_id.is_(None),
+                User.is_active.is_(True),
+                Role.code == "INSTITUTE_ADMIN",
+                Role.is_active.is_(True),
+            )
+            .order_by(User.id.asc())
+            .limit(1)
+        )
+
+        return self.db.scalar(stmt)
 
     def create(
         self,

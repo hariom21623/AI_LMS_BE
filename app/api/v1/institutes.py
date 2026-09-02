@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
-from app.core.dependencies import get_current_user
+from app.core.permissions import require_permission
 from app.db.database import get_db
-from app.models.institute import Institute
+from app.models.user import User
 from app.schemas.institute import (
     InstituteCreate,
+    InstituteCreateResponse,
     InstituteResponse,
     InstituteUpdate,
 )
@@ -20,18 +21,16 @@ router = APIRouter(
 
 @router.post(
     "",
-    response_model=InstituteResponse,
+    response_model=InstituteCreateResponse,
     status_code=status.HTTP_201_CREATED,
 )
 def create_institute(
     data: InstituteCreate,
-    current_user: Institute = Depends(get_current_user),
+    current_user: User = Depends(
+        require_permission("institute:create")
+    ),
     db: Session = Depends(get_db),
 ):
-    """
-    Create a new institute.
-    """
-
     service = InstituteService(db)
 
     return service.create_institute(data)
@@ -42,13 +41,11 @@ def create_institute(
     response_model=list[InstituteResponse],
 )
 def get_all_institutes(
-    current_user: Institute = Depends(get_current_user),
+    current_user: User = Depends(
+        require_permission("institute:read")
+    ),
     db: Session = Depends(get_db),
 ):
-    """
-    Get all institutes.
-    """
-
     service = InstituteService(db)
 
     return service.get_all_institutes()
@@ -60,13 +57,11 @@ def get_all_institutes(
 )
 def get_institute(
     institute_id: int,
-    current_user: Institute = Depends(get_current_user),
+    current_user: User = Depends(
+        require_permission("institute:read")
+    ),
     db: Session = Depends(get_db),
 ):
-    """
-    Get an institute by ID.
-    """
-
     service = InstituteService(db)
 
     return service.get_institute(institute_id)
@@ -79,18 +74,16 @@ def get_institute(
 def update_institute(
     institute_id: int,
     data: InstituteUpdate,
-    current_user: Institute = Depends(get_current_user),
+    current_user: User = Depends(
+        require_permission("institute:update")
+    ),
     db: Session = Depends(get_db),
 ):
-    """
-    Update an institute.
-    """
-
     service = InstituteService(db)
 
     return service.update_institute(
-        institute_id,
-        data,
+        institute_id=institute_id,
+        data=data,
     )
 
 
@@ -100,13 +93,11 @@ def update_institute(
 )
 def delete_institute(
     institute_id: int,
-    current_user: Institute = Depends(get_current_user),
+    current_user: User = Depends(
+        require_permission("institute:delete")
+    ),
     db: Session = Depends(get_db),
 ):
-    """
-    Delete an institute.
-    """
-
     service = InstituteService(db)
 
     service.delete_institute(institute_id)
