@@ -8,9 +8,9 @@ from sqlalchemy import pool
 from alembic import context
 
 
-# ============================================================
-# PROJECT ROOT
-# ============================================================
+# ---------------------------------------------------------
+# Project root
+# ---------------------------------------------------------
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 
@@ -18,58 +18,57 @@ if str(BASE_DIR) not in sys.path:
     sys.path.insert(0, str(BASE_DIR))
 
 
-# ============================================================
-# APPLICATION CONFIG
-# ============================================================
+# ---------------------------------------------------------
+# Application imports
+# ---------------------------------------------------------
 
 from app.core.config import settings
-
-
-# ============================================================
-# SQLALCHEMY BASE
-# ============================================================
-
 from app.db.database import Base
 
+# IMPORTANT:
+# Import the models package so every model gets registered
+# with Base.metadata before Alembic compares the schema.
+import app.models
 
-# ============================================================
-# ALEMBIC CONFIG
-# ============================================================
+
+# ---------------------------------------------------------
+# Alembic Config
+# ---------------------------------------------------------
 
 config = context.config
 
 
-# Use DATABASE_URL from selected environment:
-# .env.local / .env.dev / .env.prod
+# ---------------------------------------------------------
+# Database URL
+# ---------------------------------------------------------
+
 config.set_main_option(
     "sqlalchemy.url",
     settings.DATABASE_URL.replace("%", "%%"),
 )
 
 
-# ============================================================
-# LOGGING
-# ============================================================
+# ---------------------------------------------------------
+# Logging
+# ---------------------------------------------------------
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 
-# ============================================================
-# METADATA
-# ============================================================
+# ---------------------------------------------------------
+# Metadata
+# ---------------------------------------------------------
 
 target_metadata = Base.metadata
 
 
-# ============================================================
-# OFFLINE MIGRATIONS
-# ============================================================
+# ---------------------------------------------------------
+# Offline migrations
+# ---------------------------------------------------------
 
 def run_migrations_offline() -> None:
-    """
-    Run migrations without creating a database connection.
-    """
+    """Run migrations in offline mode."""
 
     url = settings.DATABASE_URL
 
@@ -78,7 +77,7 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={
-            "paramstyle": "named",
+            "paramstyle": "named"
         },
         compare_type=True,
         compare_server_default=True,
@@ -88,17 +87,18 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 
-# ============================================================
-# ONLINE MIGRATIONS
-# ============================================================
+# ---------------------------------------------------------
+# Online migrations
+# ---------------------------------------------------------
 
 def run_migrations_online() -> None:
-    """
-    Run migrations using an active database connection.
-    """
+    """Run migrations in online mode."""
 
     connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
+        config.get_section(
+            config.config_ini_section,
+            {}
+        ),
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
@@ -116,9 +116,9 @@ def run_migrations_online() -> None:
             context.run_migrations()
 
 
-# ============================================================
-# RUN
-# ============================================================
+# ---------------------------------------------------------
+# Run
+# ---------------------------------------------------------
 
 if context.is_offline_mode():
     run_migrations_offline()
