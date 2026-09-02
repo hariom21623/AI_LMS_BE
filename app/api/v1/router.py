@@ -1,13 +1,16 @@
 from fastapi import APIRouter
 
 from app.api.v1.auth import router as auth_router
+from app.api.v1.institutes import router as institute_router
 
 
 api_router = APIRouter()
 
 
-# =========================================================
-# Authentication
-# =========================================================
+api_router.include_router(
+    auth_router,
+)
 
-api_router.include_router( auth_router,)
+api_router.include_router(
+    institute_router,
+)
