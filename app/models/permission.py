@@ -10,12 +10,12 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.core.timezone import DEFAULT_TIMEZONE, india_now
+from app.core.timezone import india_now
 from app.db.database import Base
 
 
-class Institute(Base):
-    __tablename__ = "institutes"
+class Permission(Base):
+    __tablename__ = "permissions"
 
     id: Mapped[int] = mapped_column(
         BigInteger,
@@ -24,49 +24,20 @@ class Institute(Base):
     )
 
     name: Mapped[str] = mapped_column(
-        String(150),
+        String(100),
         nullable=False,
     )
 
     code: Mapped[str] = mapped_column(
-        String(50),
+        String(100),
         unique=True,
         index=True,
         nullable=False,
     )
 
-    email: Mapped[str | None] = mapped_column(
-        String(255),
-        unique=True,
-        nullable=True,
-    )
-
-    phone: Mapped[str | None] = mapped_column(
-        String(20),
-        nullable=True,
-    )
-
-    address: Mapped[str | None] = mapped_column(
+    description: Mapped[str | None] = mapped_column(
         Text,
         nullable=True,
-    )
-
-    logo_url: Mapped[str | None] = mapped_column(
-        String(500),
-        nullable=True,
-    )
-
-    country_code: Mapped[str] = mapped_column(
-        String(2),
-        default="IN",
-        nullable=False,
-        index=True,
-    )
-
-    timezone: Mapped[str] = mapped_column(
-        String(100),
-        default=DEFAULT_TIMEZONE,
-        nullable=False,
     )
 
     is_active: Mapped[bool] = mapped_column(

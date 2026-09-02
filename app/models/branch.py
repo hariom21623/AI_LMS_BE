@@ -4,6 +4,7 @@ from sqlalchemy import (
     BigInteger,
     Boolean,
     DateTime,
+    ForeignKey,
     Identity,
     String,
     Text,
@@ -14,13 +15,20 @@ from app.core.timezone import DEFAULT_TIMEZONE, india_now
 from app.db.database import Base
 
 
-class Institute(Base):
-    __tablename__ = "institutes"
+class Branch(Base):
+    __tablename__ = "branches"
 
     id: Mapped[int] = mapped_column(
         BigInteger,
         Identity(),
         primary_key=True,
+    )
+
+    institute_id: Mapped[int] = mapped_column(
+        BigInteger,
+        ForeignKey("institutes.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
 
     name: Mapped[str] = mapped_column(
@@ -30,14 +38,12 @@ class Institute(Base):
 
     code: Mapped[str] = mapped_column(
         String(50),
-        unique=True,
-        index=True,
         nullable=False,
+        index=True,
     )
 
     email: Mapped[str | None] = mapped_column(
         String(255),
-        unique=True,
         nullable=True,
     )
 
@@ -49,18 +55,6 @@ class Institute(Base):
     address: Mapped[str | None] = mapped_column(
         Text,
         nullable=True,
-    )
-
-    logo_url: Mapped[str | None] = mapped_column(
-        String(500),
-        nullable=True,
-    )
-
-    country_code: Mapped[str] = mapped_column(
-        String(2),
-        default="IN",
-        nullable=False,
-        index=True,
     )
 
     timezone: Mapped[str] = mapped_column(
