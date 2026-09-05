@@ -6,6 +6,11 @@ from app.models.role_permission import RolePermission
 from app.models.user import User
 from app.models.user_role import UserRole
 
+from app.models.user_transfer_history import UserTransferHistory
+from app.models.branch_transfer_history import BranchTransferHistory
+from app.models.branch_merge_history import BranchMergeHistory
+
+
 __all__ = [
     "Institute",
     "Branch",
@@ -14,4 +19,7 @@ __all__ = [
     "Permission",
     "RolePermission",
     "UserRole",
+    "UserTransferHistory",
+    "BranchTransferHistory",
+    "BranchMergeHistory",
 ]
