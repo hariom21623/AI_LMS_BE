@@ -8,6 +8,7 @@ from sqlalchemy import (
     Identity,
     String,
     Text,
+    UniqueConstraint,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -18,6 +19,14 @@ from app.db.database import Base
 class Branch(Base):
     __tablename__ = "branches"
 
+    __table_args__ = (
+        UniqueConstraint(
+            "institute_id",
+            "code",
+            name="uq_branches_institute_code",
+        ),
+    )
+
     id: Mapped[int] = mapped_column(
         BigInteger,
         Identity(),
@@ -26,7 +35,10 @@ class Branch(Base):
 
     institute_id: Mapped[int] = mapped_column(
         BigInteger,
-        ForeignKey("institutes.id", ondelete="CASCADE"),
+        ForeignKey(
+            "institutes.id",
+            ondelete="CASCADE",
+        ),
         nullable=False,
         index=True,
     )
