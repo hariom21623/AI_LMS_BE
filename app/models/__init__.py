@@ -9,6 +9,7 @@ from app.models.user_role import UserRole
 from app.models.user_transfer_history import UserTransferHistory
 from app.models.branch_transfer_history import BranchTransferHistory
 from app.models.branch_merge_history import BranchMergeHistory
+from app.models.course import Course
 
 
 __all__ = [
@@ -22,4 +23,5 @@ __all__ = [
     "UserTransferHistory",
     "BranchTransferHistory",
     "BranchMergeHistory",
+    "Course",
 ]

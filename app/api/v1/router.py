@@ -11,6 +11,7 @@ from app.api.v1.user_roles import router as user_role_router
 from app.api.v1.branch_transfer_reversal import (
     router as branch_transfer_reversal_router,
 )
+from app.api.v1.course import router as course_router
 
 api_router = APIRouter()
 
@@ -21,3 +22,4 @@ api_router.include_router(branch_router)
 api_router.include_router(user_management_router)
 api_router.include_router(branch_transfer_router)
 api_router.include_router(branch_transfer_reversal_router)
+api_router.include_router(course_router)
